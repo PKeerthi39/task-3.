@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Store</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#products" onclick="showSection('products')">Products</a></li>
+                <li><a href="#contact" onclick="showSection('contact')">Contact</a></li>
+                <li><a href="#cart">Cart (<span id="cart-count">0</span>)</a></li>
+                <li><a href="#about" onclick="showSection('about')">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="home" class="store-title">
+            <h1>Welcome to the Book Store</h1>
+        </div>
+
+        <section id="products" class="product-section" style="display:none;">
+            <div class="product">
+                <img src="book11.jpg" alt="Book 1">
+                <h3>Book 1</h3>
+                <p>$10.00</p>
+                <button class="add-to-cart" onclick="addToCart('Book 1', 10)">Add to Cart</button>
+            </div>
+            <div class="product">
+                <img src="book2.jpg" alt="Book 2">
+                <h3>Book 2</h3>
+                <p>$15.00</p>
+                <button class="add-to-cart" onclick="addToCart('Book 2', 15)">Add to Cart</button>
+            </div>
+            <div class="product">
+                <img src="book3.jpg" alt="Book 3">
+                <h3>Book 3</h3>
+                <p>$20.00</p>
+                <button class="add-to-cart" onclick="addToCart('Book 3', 20)">Add to Cart</button>
+            </div>
+            <div class="product">
+                <img src="book4.jpg" alt="Book 4">
+                <h3>Book 4</h3>
+                <p>$25.00</p>
+                <button class="add-to-cart" onclick="addToCart('Book 4', 25)">Add to Cart</button>
+            </div>
+        </section>
+
+        <!-- Contact Section with Order Form -->
+        <section id="contact" class="contact-section" style="display:none;">
+            <h2>Contact Us</h2>
+            <form id="order-form" onsubmit="submitOrder(event)">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required><br><br>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" required><br><br>
+
+                <label for="address">Address:</label>
+                <textarea id="address" required></textarea><br><br>
+
+                <label for="total">Total Amount:</label>
+                <input type="text" id="total" disabled value="$0.00"><br><br>
+
+                <h3>Cart Items:</h3>
+                <div id="cart-details"></div><br>
+
+                <button type="submit">Submit Order</button>
+            </form>
+            <div id="order-success" style="display:none; margin-top: 20px;">
+                <h3>Order Successful!</h3>
+                <p>Your order has been placed successfully. Thank you for shopping with us!</p>
+            </div>
+        </section>
+
+        <section id="about" class="about-section" style="display:none;">
+            <h2>About Us</h2>
+            <p>Welcome to the Book Store! We offer a wide variety of books across genres, ensuring there is something for everyone. Our store is dedicated to bringing you the best reads, offering both physical and digital books at affordable prices.</p>
+            <p>Address: 123 Book Street, Book City, BC 12345</p>
+        </section>
+    </main>
+
+    <footer>
+        <button class="shop-now" onclick="showSection('products')">Shop Now</button>
+    </footer>
+
+    <script>
+        let cart = [];  // Array to store cart items (book title and price)
+        let cartCount = 0;  // Initialize cart count
+        let totalAmount = 0;  // Initialize total amount
+
+        // Function to show the correct section
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('products').style.display = 'none';
+            document.getElementById('contact').style.display = 'none';
+            document.getElementById('about').style.display = 'none';
+            document.getElementById('home').style.display = 'none';
+
+            // Show the selected section
+            if (section === 'products') {
+                document.getElementById('products').style.display = 'block';
+            } else if (section === 'contact') {
+                document.getElementById('contact').style.display = 'block';
+            } else if (section === 'about') {
+                document.getElementById('about').style.display = 'block';
+            } else {
+                document.getElementById('home').style.display = 'block';
+            }
+        }
+
+        // Function to add products to the cart and update total
+        function addToCart(bookTitle, price) {
+            cart.push({ title: bookTitle, price: price });  // Add book to cart
+            cartCount++;  // Increment the cart count
+            totalAmount += price;  // Update total amount
+            document.getElementById('cart-count').textContent = cartCount;  // Update cart count in the header
+
+            // Update the total amount in the form
+            document.getElementById('total').value = `$${totalAmount.toFixed(2)}`;
+
+            // Update the cart details in the contact section
+            updateCartDetails();
+        }
+
+        // Function to update the cart details in the contact form
+        function updateCartDetails() {
+            let cartDetails = '';
+            cart.forEach(item => {
+                cartDetails += `<p>${item.title} - $${item.price}</p>`;
+            });
+            document.getElementById('cart-details').innerHTML = cartDetails;
+        }
+
+        // Function to handle order form submission
+        function submitOrder(event) {
+            event.preventDefault(); // Prevent form submission to server
+
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const address = document.getElementById('address').value;
+
+            // Show order success message
+            document.getElementById('order-success').style.display = 'block';
+
+            // Optionally, you can hide the form after submission
+            document.getElementById('order-form').reset();
+            document.getElementById('total').value = '$0.00';
+            document.getElementById('cart-details').innerHTML = '';  // Clear cart details
+            cart = [];  // Reset cart
+            cartCount = 0;
+            document.getElementById('cart-count').textContent = cartCount;
+        }
+
+        // Initialize by showing the home section
+        showSection('home');
+    </script>
+</body>
+</html>
